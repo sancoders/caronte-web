@@ -26,7 +26,8 @@ Cómo escribís:
 export async function POST(req: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response(
-      'Todavía no está cargada la clave de la API. Ponela en caronte-web/.env.local y reiniciá.',
+      'Todavía no está cargada la clave de la API de Claude. En local va en ' +
+      'caronte-web/.env.local; en Vercel, en Settings y despues Environment Variables.',
       { status: 503 },
     )
   }

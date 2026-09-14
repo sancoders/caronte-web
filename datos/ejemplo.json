@@ -85,6 +85,9 @@
         "Dejar que cualquiera pueda CREAR un turno, porque esa es la gracia de la app",
         "No dejar que nadie pueda LEER, EDITAR ni BORRAR turnos sin ser la duena",
         "Probar desde una ventana de incognito que ya no se vea la lista"
+      ],
+      "problemas": [
+        "db-turnos-abierta"
       ]
     },
     {
@@ -98,6 +101,9 @@
         "Agregar login con email y clave usando el login que ya trae Supabase",
         "Crear tu usuario de duena",
         "Que /admin pida login antes de mostrar nada"
+      ],
+      "problemas": [
+        "admin-sin-clave"
       ]
     },
     {
@@ -111,6 +117,9 @@
         "Mostrar Guardando mientras se manda",
         "Mostrar Listo, tu turno quedo reservado cuando sale bien",
         "Mostrar No pudimos guardar el turno, probá de nuevo cuando falla"
+      ],
+      "problemas": [
+        "form-sin-aviso-error"
       ]
     },
     {
@@ -123,6 +132,9 @@
       "pasos": [
         "En pantallas chicas mostrar cada turno como una tarjeta en vez de una fila de tabla",
         "Dejar la tabla completa solo para pantalla grande"
+      ],
+      "problemas": [
+        "tabla-desborda-celular"
       ]
     },
     {
@@ -138,6 +150,10 @@
         "Subir un favicon propio",
         "Subir una imagen de preview con el nombre de la peluqueria",
         "Sacar el script del editor de Lovable"
+      ],
+      "problemas": [
+        "metadatos-sin-tocar",
+        "editor-en-produccion"
       ]
     },
     {
@@ -151,12 +167,28 @@
         "Comprar el dominio (unos 12 dolares por ano)",
         "Apuntarlo al hosting desde el panel del registrador",
         "Esperar a que propague y verificar que abra"
-      ]
+      ],
+      "problemas": []
     }
   ],
   "capturas": [
-    { "ruta": "/",      "pantalla": "celular", "momento": "antes", "url": "https://ejemplo.supabase.co/shots/home-celular-antes.png" },
-    { "ruta": "/",      "pantalla": "compu",   "momento": "antes", "url": "https://ejemplo.supabase.co/shots/home-compu-antes.png" },
-    { "ruta": "/admin", "pantalla": "celular", "momento": "antes", "url": "https://ejemplo.supabase.co/shots/admin-celular-antes.png" }
+    {
+      "ruta": "/",
+      "pantalla": "celular",
+      "momento": "antes",
+      "url": "https://ejemplo.supabase.co/shots/home-celular-antes.png"
+    },
+    {
+      "ruta": "/",
+      "pantalla": "compu",
+      "momento": "antes",
+      "url": "https://ejemplo.supabase.co/shots/home-compu-antes.png"
+    },
+    {
+      "ruta": "/admin",
+      "pantalla": "celular",
+      "momento": "antes",
+      "url": "https://ejemplo.supabase.co/shots/admin-celular-antes.png"
+    }
   ]
 }
