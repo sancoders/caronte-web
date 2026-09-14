@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "estado": "listo",
+  "app": {
+    "nombre": "Turnos Belgrano",
+    "repo": "https://github.com/santi/turnos-belgrano",
+    "url": "https://turnos-belgrano.lovable.app",
+    "hecha_con": "lovable",
+    "stack": "vite + react + supabase",
+    "analizada_el": "2026-09-14T11:32:00-03:00"
+  },
+  "score": {
+    "total": 41,
+    "segura": 6,
+    "funciona": 14,
+    "usable": 11,
+    "compartible": 10
+  },
+  "problemas": [
+    {
+      "id": "db-turnos-abierta",
+      "eje": "segura",
+      "gravedad": "critico",
+      "titulo": "Cualquiera puede leer y borrar todos los turnos sin estar logueado",
+      "donde": "supabase/migrations/20260914_turnos.sql",
+      "por_que_importa": "La tabla guarda nombre, telefono y email de tus clientas. Hoy cualquiera que abra tu app puede descargarse la lista entera, o borrarla.",
+      "lo_arregla_caronte": true
+    },
+    {
+      "id": "admin-sin-clave",
+      "eje": "segura",
+      "gravedad": "critico",
+      "titulo": "La pagina /admin entra cualquiera que sepa la direccion",
+      "donde": "src/pages/Admin.tsx",
+      "por_que_importa": "No hay ningun control. Escribiendo /admin en la barra se ven todos los turnos y se pueden cancelar.",
+      "lo_arregla_caronte": true
+    },
+    {
+      "id": "tabla-desborda-celular",
+      "eje": "usable",
+      "gravedad": "alto",
+      "titulo": "La tabla de turnos se sale de la pantalla en el celular",
+      "donde": "src/pages/Admin.tsx",
+      "por_que_importa": "A 390px de ancho la tabla mide 780px. Hay que scrollear de costado para ver el estado de un turno, y la mayoria de la gente entra desde el celular.",
+      "lo_arregla_caronte": true
+    },
+    {
+      "id": "form-sin-aviso-error",
+      "eje": "funciona",
+      "gravedad": "alto",
+      "titulo": "Si falla al guardar un turno, el formulario no avisa nada",
+      "donde": "src/components/FormTurno.tsx",
+      "por_que_importa": "La persona aprieta Reservar, no pasa nada visible, y se va pensando que sacó el turno. Vos nunca te enterás.",
+      "lo_arregla_caronte": true
+    },
+    {
+      "id": "metadatos-sin-tocar",
+      "eje": "compartible",
+      "gravedad": "medio",
+      "titulo": "Al compartir el link aparece el logo de Lovable, no tu peluqueria",
+      "donde": "index.html",
+      "por_que_importa": "El titulo dice Lovable App, no hay favicon propio y la imagen de preview es la de Lovable. Cuando pasás el link por WhatsApp parece un link de otra empresa.",
+      "lo_arregla_caronte": true
+    },
+    {
+      "id": "editor-en-produccion",
+      "eje": "compartible",
+      "gravedad": "bajo",
+      "titulo": "La app publicada sigue cargando el script del editor de Lovable",
+      "donde": "index.html",
+      "por_que_importa": "Tus clientas descargan un script que solo sirve para editar la app. Pesa de más y no hace nada para ellas.",
+      "lo_arregla_caronte": true
+    }
+  ],
+  "plan": [
+    {
+      "orden": 1,
+      "titulo": "Cerrar el acceso a la base de datos",
+      "bloqueante": true,
+      "estado": "pendiente",
+      "lo_hace_caronte": true,
+      "por_que": "Es lo unico que puede hacerte un daño real hoy: los datos de tus clientas estan a la vista.",
+      "pasos": [
+        "Prender el candado (RLS) en la tabla turnos",
+        "Dejar que cualquiera pueda CREAR un turno, porque esa es la gracia de la app",
+        "No dejar que nadie pueda LEER, EDITAR ni BORRAR turnos sin ser la duena",
+        "Probar desde una ventana de incognito que ya no se vea la lista"
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Poner una clave en /admin",
+      "bloqueante": true,
+      "estado": "pendiente",
+      "lo_hace_caronte": true,
+      "por_que": "Sin esto, el paso 1 no sirve de nada: la puerta de atras sigue abierta.",
+      "pasos": [
+        "Agregar login con email y clave usando el login que ya trae Supabase",
+        "Crear tu usuario de duena",
+        "Que /admin pida login antes de mostrar nada"
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Que el formulario avise cuando algo sale mal",
+      "bloqueante": false,
+      "estado": "pendiente",
+      "lo_hace_caronte": true,
+      "por_que": "Hoy perdes turnos sin enterarte.",
+      "pasos": [
+        "Mostrar Guardando mientras se manda",
+        "Mostrar Listo, tu turno quedo reservado cuando sale bien",
+        "Mostrar No pudimos guardar el turno, probá de nuevo cuando falla"
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Arreglar la tabla en el celular",
+      "bloqueante": false,
+      "estado": "pendiente",
+      "lo_hace_caronte": true,
+      "por_que": "Vos vas a mirar los turnos desde el celular, no desde la compu.",
+      "pasos": [
+        "En pantallas chicas mostrar cada turno como una tarjeta en vez de una fila de tabla",
+        "Dejar la tabla completa solo para pantalla grande"
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Que el link se comparta con tu nombre",
+      "bloqueante": false,
+      "estado": "pendiente",
+      "lo_hace_caronte": true,
+      "por_que": "Es lo primero que ve alguien cuando le pasan tu link por WhatsApp.",
+      "pasos": [
+        "Poner de titulo Turnos Belgrano - Peluqueria en Belgrano",
+        "Poner una descripcion corta",
+        "Subir un favicon propio",
+        "Subir una imagen de preview con el nombre de la peluqueria",
+        "Sacar el script del editor de Lovable"
+      ]
+    },
+    {
+      "orden": 6,
+      "titulo": "Conectarle tu dominio",
+      "bloqueante": false,
+      "estado": "pendiente",
+      "lo_hace_caronte": false,
+      "por_que": "turnos-belgrano.lovable.app no da la misma confianza que tu propio dominio.",
+      "pasos": [
+        "Comprar el dominio (unos 12 dolares por ano)",
+        "Apuntarlo al hosting desde el panel del registrador",
+        "Esperar a que propague y verificar que abra"
+      ]
+    }
+  ],
+  "capturas": [
+    { "ruta": "/",      "pantalla": "celular", "momento": "antes", "url": "https://ejemplo.supabase.co/shots/home-celular-antes.png" },
+    { "ruta": "/",      "pantalla": "compu",   "momento": "antes", "url": "https://ejemplo.supabase.co/shots/home-compu-antes.png" },
+    { "ruta": "/admin", "pantalla": "celular", "momento": "antes", "url": "https://ejemplo.supabase.co/shots/admin-celular-antes.png" }
+  ]
+}
