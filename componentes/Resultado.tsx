@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Anillo } from './Anillo'
 import { Chat } from './Chat'
+import { Capturas } from './Capturas'
 import type { Eje, Gravedad, Resultado as Datos } from '@/lib/tipos'
 import { NOMBRE_EJE, NOMBRE_GRAVEDAD } from '@/lib/tipos'
 
@@ -154,6 +155,8 @@ export function Resultado({ datos }: { datos: Datos }) {
           )}
         </section>
       </div>
+
+      <Capturas capturas={datos.capturas ?? []} />
 
       <Chat datos={datos} />
     </main>
