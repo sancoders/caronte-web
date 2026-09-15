@@ -3,6 +3,10 @@ import { MODELO } from '@/lib/modelo'
 
 export const maxDuration = 60
 
+// Precio de claude-sonnet-5, en dolares por millon de tokens. Igual que analizador/costo.py.
+const ENTRADA = 2.0
+const SALIDA = 10.0
+
 const SYSTEM = `Sos Caronte, el copiloto que acompaña a alguien a publicar su app.
 
 La app la hizo escribiéndole a una IA (Lovable, Bolt, v0, Claude Code, Cursor). La persona
@@ -55,11 +59,20 @@ export async function POST(req: Request) {
           ],
           messages: mensajes,
         })
+        let entrada = 0
+        let salida = 0
         for await (const evento of respuesta) {
           if (evento.type === 'content_block_delta' && evento.delta.type === 'text_delta') {
             controlar.enqueue(codificar.encode(evento.delta.text))
           }
+          if (evento.type === 'message_start') entrada = evento.message.usage.input_tokens
+          if (evento.type === 'message_delta') salida = evento.usage.output_tokens
         }
+        // Queda en los logs del servidor. Todo lo que gasta el producto se mide, no se estima.
+        const usd = (entrada * ENTRADA + salida * SALIDA) / 1_000_000
+        console.log(
+          `[costo] chat: ${entrada} tokens de entrada + ${salida} de salida = $${usd.toFixed(4)}`,
+        )
         controlar.close()
       } catch (e) {
         controlar.enqueue(
