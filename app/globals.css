@@ -5,12 +5,19 @@
 :root { color-scheme: dark; }
 
 body {
+  /* El robotito vive fijo abajo a la derecha. Este colchon es para que nunca tape el
+     final de la pagina, sobre todo en el celular. */
+  padding-bottom: 168px;
   background:
     radial-gradient(900px 500px at 12% -8%, rgba(139, 92, 246, 0.16), transparent 60%),
     radial-gradient(700px 420px at 92% 4%, rgba(99, 102, 241, 0.10), transparent 62%),
     #0b0a12;
   color: #ece9f6;
   min-height: 100vh;
+}
+
+@media (min-width: 640px) {
+  body { padding-bottom: 96px; }
 }
 
 @layer components {

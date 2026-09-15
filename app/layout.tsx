@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { RobotitoCargado } from '@/componentes/RobotitoCargado'
 
 export const metadata: Metadata = {
   title: 'Caronte · de tu repo a tu app publicada',
@@ -15,7 +16,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-AR">
-      <body>{children}</body>
+      <body>
+        {children}
+        <RobotitoCargado />
+      </body>
     </html>
   )
 }
