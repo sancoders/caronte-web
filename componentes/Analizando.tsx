@@ -58,10 +58,11 @@ export function Analizando({ run }: { run: Run }) {
   const avance = piso + (techo - piso) * (1 - Math.exp(-quieto / 22))
 
   const enCola = run.estado === 'en_cola'
-  const demorado = quieto > 75
-  // El worker se rinde a los 7 minutos y marca error. Si pasaron 9 y seguimos sin
-  // noticias, es que ni eso pudo escribir: alguien tiene que enterarse igual.
-  const seColgo = transcurrido > 540 && quieto > 180
+  const demorado = !enCola && quieto > 75
+  // Cuatro minutos sin una sola senal, estando supuestamente trabajando, es que se murio
+  // del otro lado. Mientras siga avisando NO se toca, por mas que tarde: una corrida
+  // lenta que avanza esta bien.
+  const seColgo = !enCola && quieto > 240
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 pb-24 pt-6">
@@ -89,27 +90,35 @@ export function Analizando({ run }: { run: Run }) {
         {run.paso ?? 'Esperando turno'}
       </p>
 
-      {enCola && quieto > 25 && (
-        <div className="panel mt-5 p-5 text-sm leading-relaxed text-[#b9b4cd]">
-          Todavía no lo agarró nadie. El analizador corre aparte de la web: si lo estás
-          probando en tu máquina, fijate que esté levantado con{' '}
-          <code className="rounded bg-[#0e0d18] px-1.5 py-0.5 text-acentoSuave">
-            python analizador/worker.py
-          </code>
-          .
+      {enCola && transcurrido > 20 && (
+        <div className="panel mt-5 p-5">
+          <p className="text-sm leading-relaxed text-[#b9b4cd]">
+            Tu app está en la fila, esperando turno. Arranca sola y lo vas a ver moverse
+            acá mismo. Podés dejar la pestaña abierta o volver más tarde: no se pierde,
+            y el link te sirve siempre.
+          </p>
+          {transcurrido > 90 && (
+            <p className="mt-4 border-t border-borde pt-4 text-xs leading-relaxed text-tenue">
+              ¿Sos vos el que está probando Caronte? Lo que hace el trabajo pesado corre
+              aparte de esta página. Fijate que esté prendido:{' '}
+              <code className="rounded bg-[#0e0d18] px-1.5 py-0.5 text-acentoSuave">
+                python analizador/worker.py
+              </code>
+            </p>
+          )}
         </div>
       )}
 
       {seColgo ? (
         <div className="mt-5 rounded-xl border border-[#5c2b2b] bg-[#2a1618] p-5 text-sm leading-relaxed text-[#f0a5a5]">
-          Hace {Math.floor(quieto / 60)} minutos que no recibimos ninguna señal. Algo se
-          trabó de nuestro lado y preferimos decírtelo antes que dejarte esperando.
-          Volvé a intentarlo desde el inicio; tu app no la tocamos, Caronte solo mira.
+          Hace {Math.floor(quieto / 60)} minutos que no recibimos ninguna señal. Se nos
+          trabó algo de este lado y preferimos decírtelo antes que dejarte esperando al
+          pedo. Volvé a intentarlo desde el inicio. Tu app no la tocamos: Caronte solo mira.
         </div>
-      ) : demorado && !enCola ? (
+      ) : demorado ? (
         <p className="mt-3 text-sm text-tenue">
           Está tardando más de lo habitual, pero sigue andando. Tu app puede estar lenta
-          para abrir. Cortamos solos a los 7 minutos si no termina.
+          para abrir. No lo vamos a cortar mientras siga avanzando.
         </p>
       ) : null}
 
