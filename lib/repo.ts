@@ -19,6 +19,8 @@ export async function chequearRepo(url: string): Promise<ChequeoRepo> {
     const resp = await fetch(`https://api.github.com/repos/${r.duenio}/${r.nombre}`, {
       headers: { Accept: 'application/vnd.github+json' },
       cache: 'no-store',
+      // si GitHub no contesta en 8 segundos, lo decimos en vez de dejar el boton girando
+      signal: AbortSignal.timeout(8000),
     })
     if (resp.status === 404) return { ok: false, motivo: 'privado' }
     if (!resp.ok) return { ok: false, motivo: 'sin_conexion' }

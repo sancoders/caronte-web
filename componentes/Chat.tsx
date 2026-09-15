@@ -33,11 +33,17 @@ export function Chat({ datos }: { datos: Resultado }) {
     setTexto('')
     setPensando(true)
 
+    // El servidor corta a los 60 segundos. Si por lo que sea no contesta, cortamos
+    // nosotros a los 70 y lo decimos: nada de quedarse en "Pensando..." para siempre.
+    const cortar = new AbortController()
+    const reloj = window.setTimeout(() => cortar.abort(), 70_000)
+
     try {
       const r = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensajes: nuevos, analisis: datos }),
+        signal: cortar.signal,
       })
 
       if (!r.ok || !r.body) {
@@ -59,11 +65,19 @@ export function Chat({ datos }: { datos: Resultado }) {
         setMensajes([...nuevos, { role: 'assistant', content: acumulado }])
         fin.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
       }
-    } catch {
+    } catch (e) {
+      const seColgo = (e as Error)?.name === 'AbortError'
       setMensajes([
         ...nuevos,
-        { role: 'assistant', content: 'Se cortó la conexión. Probá de nuevo.' },
+        {
+          role: 'assistant',
+          content: seColgo
+            ? 'Tardé demasiado en contestarte y corté. Probá de nuevo, o preguntame algo más corto.'
+            : 'Se cortó la conexión. Fijate si tenés internet y probá de nuevo.',
+        },
       ])
+    } finally {
+      window.clearTimeout(reloj)
     }
     setPensando(false)
   }

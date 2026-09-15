@@ -59,6 +59,9 @@ export function Analizando({ run }: { run: Run }) {
 
   const enCola = run.estado === 'en_cola'
   const demorado = quieto > 75
+  // El worker se rinde a los 7 minutos y marca error. Si pasaron 9 y seguimos sin
+  // noticias, es que ni eso pudo escribir: alguien tiene que enterarse igual.
+  const seColgo = transcurrido > 540 && quieto > 180
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 pb-24 pt-6">
@@ -97,12 +100,18 @@ export function Analizando({ run }: { run: Run }) {
         </div>
       )}
 
-      {demorado && !enCola && (
+      {seColgo ? (
+        <div className="mt-5 rounded-xl border border-[#5c2b2b] bg-[#2a1618] p-5 text-sm leading-relaxed text-[#f0a5a5]">
+          Hace {Math.floor(quieto / 60)} minutos que no recibimos ninguna señal. Algo se
+          trabó de nuestro lado y preferimos decírtelo antes que dejarte esperando.
+          Volvé a intentarlo desde el inicio; tu app no la tocamos, Caronte solo mira.
+        </div>
+      ) : demorado && !enCola ? (
         <p className="mt-3 text-sm text-tenue">
           Está tardando más de lo habitual, pero sigue andando. Tu app puede estar lenta
-          para abrir.
+          para abrir. Cortamos solos a los 7 minutos si no termina.
         </p>
-      )}
+      ) : null}
 
       <div className="mt-9 grid gap-6 md:grid-cols-2">
         <ol className="panel p-7">
